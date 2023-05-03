@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import NewsItem from "./NewsItem";
 import useFetch from "./useFetch";
 
 const News = () => {
+  const [page, setPage] = useState(1);
+
   const { data, loading, error } = useFetch(
-    "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=0c9b390f390647669d0aec5b09de3079"
+    `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=0c9b390f390647669d0aec5b09de3079&page=${page}`
   );
   if (!loading && !error) {
     console.log(data);
@@ -174,17 +176,46 @@ const News = () => {
         'Steve Bannon accused Twitter CEO Elon Musk of lying on Saturday about his stance on free speech after the businessman said last week that he wants to "elevate citizen journalism."Musk emerged as a po… [+298 chars]',
     },
   ];*/
+  const handleNext = () => {
+    setPage(page + 1);
+    console.log("next");
+  };
+
+  const handlePrevious = () => {
+    setPage(page - 1);
+    console.log("previous");
+  };
   if (!loading && !error) {
     return (
-      <div className="m-4 row">
-        <h2>Top Headlines</h2>
-        {data.articles.map((elem) => {
-          return (
-            <div className="col-md-4 my-3">
-              <NewsItem elements={elem}></NewsItem>
-            </div>
-          );
-        })}
+      <div className="container">
+        <div className="row">
+          <h2>Top Headlines</h2>
+          {data.articles.map((elem) => {
+            return (
+              <div className="col-md-4 my-3">
+                <NewsItem elements={elem}></NewsItem>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-5 mb-4 d-flex justify-content-between">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handlePrevious}
+            disabled={page === 1}
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleNext}
+            disabled={page === 4}
+          >
+            Next
+          </button>
+        </div>
       </div>
     );
   }
