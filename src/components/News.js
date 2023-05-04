@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import NewsItem from "./NewsItem";
 import useFetch from "./useFetch";
+import LoadingBar from "react-top-loading-bar";
 
-const News = () => {
+const News = (props) => {
   const [page, setPage] = useState(1);
 
   const { data, loading, error } = useFetch(
-    `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=0c9b390f390647669d0aec5b09de3079&page=${page}`
+    `https://newsapi.org/v2/top-headlines?country=us&category=${props.category}&apiKey=0c9b390f390647669d0aec5b09de3079&page=${page}&pagesize=5`
   );
   if (!loading && !error) {
     console.log(data);
   }
+  const [progress, setProgress] = useState(0);
 
   /*const articles = [
     {
@@ -179,15 +181,22 @@ const News = () => {
   const handleNext = () => {
     setPage(page + 1);
     console.log("next");
+    setProgress(100);
   };
 
   const handlePrevious = () => {
     setPage(page - 1);
     console.log("previous");
+    setProgress(100);
   };
   if (!loading && !error) {
     return (
       <div className="container">
+        <LoadingBar
+          color="#f11946"
+          progress={progress}
+          onLoaderFinished={() => setProgress(0)}
+        />
         <div className="row">
           <h2>Top Headlines</h2>
           {data.articles.map((elem) => {
